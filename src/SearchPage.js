@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { DebounceInput } from "react-debounce-input";
 import Books from "./Books";
 
 class SearchPage extends Component {
@@ -12,7 +13,7 @@ class SearchPage extends Component {
             query: query
         }));
 
-        if (this.state.query !== "") {
+        if (query !== "") {
             this.props.searchBook(this.state.query);
         } else {
             this.props.clearResults();
@@ -20,18 +21,24 @@ class SearchPage extends Component {
     };
 
     render() {
-        const { moveBook } = this.props;
+        const { moveBook, searchedBooks } = this.props;
+
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                    <Link className="close-search" to="/">
+                    <Link
+                        className="close-search"
+                        to="/"
+                        onClick={this.props.clearResults}
+                    >
                         Close
                     </Link>
 
                     <div className="search-books-input-wrapper">
-                        <input
+                        <DebounceInput
                             type="text"
                             placeholder="Search by title or author"
+                            debounceTimeout={300}
                             value={this.state.query}
                             onChange={event =>
                                 this.updateQuery(event.target.value)
@@ -41,7 +48,7 @@ class SearchPage extends Component {
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {this.props.searchedBooks.map(book => (
+                        {searchedBooks.map(book => (
                             <Books
                                 key={book.id}
                                 book={book}

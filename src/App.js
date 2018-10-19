@@ -30,15 +30,13 @@ class BooksApp extends React.Component {
     };
 
     clearResults = () => {
-    this.setState({ searchedBooks: [] })
-  }
+        this.setState({ searchedBooks: [] });
+    };
 
     searchBook = query => {
         BooksAPI.search(query).then(searchedBooks => {
             if (searchedBooks.error === "empty query") {
-                this.setState({
-                    searchedBooks: []
-                });
+                this.clearResults();
             } else {
                 searchedBooks = searchedBooks.map(book => {
                     let bookInShelf = this.inShelf(book, this.state.books);
