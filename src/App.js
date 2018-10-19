@@ -7,7 +7,8 @@ import Shelf from "./Shelf";
 
 class BooksApp extends React.Component {
     state = {
-        books: []
+        books: [],
+        seachedBooks: []
     };
 
     componentDidMount() {
@@ -26,6 +27,37 @@ class BooksApp extends React.Component {
                 }));
             });
         });
+    };
+
+    searchBook = query => {
+        BooksAPI.search(query).then(seachedBooks => {
+            seachedBooks = seachedBooks.map(book => {
+                let bookInShelf = this.inShelf(book, this.state.books);
+
+                if (bookInShelf === undefined) {
+                    book.shelf = "none";
+                    return book;
+                } else {
+                    return bookInShelf;
+                }
+            });
+
+            this.setState(() => ({
+                seachedBooks
+            }));
+        });
+    };
+
+    inShelf = (book, shelf) => {
+        let inTheShelf;
+
+        shelf.forEach(bookToCheck => {
+            if (bookToCheck.id === book.id) {
+                inTheShelf = bookToCheck;
+            }
+        });
+
+        return inTheShelf;
     };
 
     render() {
@@ -62,7 +94,16 @@ class BooksApp extends React.Component {
                         </div>
                     )}
                 />
-                <Route path="/search" render={() => <SearchPage />} />
+                <Route
+                    path="/search"
+                    render={() => (
+                        <SearchPage
+                            searchBook={this.searchBook}
+                            moveBook={this.moveBook}
+                            seachedBooks={this.state.seachedBooks}
+                        />
+                    )}
+                />
             </div>
         );
     }

@@ -12,6 +12,7 @@ class Books extends Component {
     handleSelection = event => {
         this.setState({ selectValue: event.target.value });
     };
+
     render() {
         const { book, moveBook } = this.props;
 
@@ -31,7 +32,7 @@ class Books extends Component {
                                 value={this.state.selectValue}
                                 onChange={this.handleSelection}
                                 onClick={() => {
-                                    moveBook(book, this.state.selectValue)
+                                    moveBook(book, this.state.selectValue);
                                 }}
                             >
                                 <option value="move" disabled>
