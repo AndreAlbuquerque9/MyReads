@@ -15,6 +15,9 @@ class Books extends Component {
 
     render() {
         const { book, moveBook } = this.props;
+        const bookThumnail = book.imageLinks
+            ? book.imageLinks.thumbnail
+            : "'https://via.placeholder.com/130x175'";
 
         return (
             <li>
@@ -23,7 +26,7 @@ class Books extends Component {
                         <img
                             className="book-cover"
                             style={{ width: 128, height: 193 }}
-                            src={book.imageLinks.thumbnail}
+                            src={bookThumnail}
                             alt={book.title}
                         />
 

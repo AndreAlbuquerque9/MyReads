@@ -8,7 +8,7 @@ import Shelf from "./Shelf";
 class BooksApp extends React.Component {
     state = {
         books: [],
-        seachedBooks: []
+        searchedBooks: []
     };
 
     componentDidMount() {
@@ -29,22 +29,32 @@ class BooksApp extends React.Component {
         });
     };
 
+    clearResults = () => {
+    this.setState({ searchedBooks: [] })
+  }
+
     searchBook = query => {
-        BooksAPI.search(query).then(seachedBooks => {
-            seachedBooks = seachedBooks.map(book => {
-                let bookInShelf = this.inShelf(book, this.state.books);
+        BooksAPI.search(query).then(searchedBooks => {
+            if (searchedBooks.error === "empty query") {
+                this.setState({
+                    searchedBooks: []
+                });
+            } else {
+                searchedBooks = searchedBooks.map(book => {
+                    let bookInShelf = this.inShelf(book, this.state.books);
 
-                if (bookInShelf === undefined) {
-                    book.shelf = "none";
-                    return book;
-                } else {
-                    return bookInShelf;
-                }
-            });
+                    if (bookInShelf === undefined) {
+                        book.shelf = "none";
+                        return book;
+                    } else {
+                        return bookInShelf;
+                    }
+                });
 
-            this.setState(() => ({
-                seachedBooks
-            }));
+                this.setState(() => ({
+                    searchedBooks
+                }));
+            }
         });
     };
 
@@ -100,7 +110,8 @@ class BooksApp extends React.Component {
                         <SearchPage
                             searchBook={this.searchBook}
                             moveBook={this.moveBook}
-                            seachedBooks={this.state.seachedBooks}
+                            searchedBooks={this.state.searchedBooks}
+                            clearResults={this.clearResults}
                         />
                     )}
                 />

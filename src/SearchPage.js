@@ -3,26 +3,24 @@ import { Link } from "react-router-dom";
 import Books from "./Books";
 
 class SearchPage extends Component {
-    constructor(props) {
-        super(props);
+    state = {
+        query: ""
+    };
 
-        this.state = {
-            query: ""
-        };
-    }
-
-    handleChange = event => {
-        this.setState({
-            query: event.target.value
-        });
+    updateQuery = query => {
+        this.setState(() => ({
+            query: query
+        }));
 
         if (this.state.query !== "") {
             this.props.searchBook(this.state.query);
+        } else {
+            this.props.clearResults();
         }
     };
 
     render() {
-        const { book, moveBook } = this.props;
+        const { moveBook } = this.props;
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -35,13 +33,15 @@ class SearchPage extends Component {
                             type="text"
                             placeholder="Search by title or author"
                             value={this.state.query}
-                            onChange={this.handleChange}
+                            onChange={event =>
+                                this.updateQuery(event.target.value)
+                            }
                         />
                     </div>
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {this.props.seachedBooks.map(book => (
+                        {this.props.searchedBooks.map(book => (
                             <Books
                                 key={book.id}
                                 book={book}
