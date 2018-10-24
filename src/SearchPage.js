@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { DebounceInput } from "react-debounce-input";
 import Books from "./Books";
+import * as BooksAPI from "./BooksAPI";
 
 class SearchPage extends Component {
     state = {
-        query: ""
+        query: "",
+        searchedBooks: []
     };
 
     updateQuery = query => {
@@ -20,8 +22,47 @@ class SearchPage extends Component {
         }
     };
 
+    searchBook = query => {
+        BooksAPI.search(query).then(searchedBooks => {
+            if (searchedBooks.error === "empty query") {
+                this.clearResults();
+            } else {
+                searchedBooks = searchedBooks.map(book => {
+                    let bookInShelf = this.inShelf(book, this.state.books);
+
+                    if (bookInShelf === undefined) {
+                        book.shelf = "none";
+                        return book;
+                    } else {
+                        return bookInShelf;
+                    }
+                });
+
+                this.setState(() => ({
+                    searchedBooks
+                }));
+            }
+        });
+    };
+
+    inShelf = (book, shelf) => {
+        let inTheShelf;
+
+        shelf.forEach(bookToCheck => {
+            if (bookToCheck.id === book.id) {
+                inTheShelf = bookToCheck;
+            }
+        });
+
+        return inTheShelf;
+    };
+
+    clearResults = () => {
+        this.setState({ searchedBooks: [] });
+    };
+
     render() {
-        const { moveBook, searchedBooks } = this.props;
+        const { moveBook } = this.props;
 
         return (
             <div className="search-books">
@@ -29,7 +70,7 @@ class SearchPage extends Component {
                     <Link
                         className="close-search"
                         to="/"
-                        onClick={this.props.clearResults}
+                        onClick={this.clearResults}
                     >
                         Close
                     </Link>
@@ -48,7 +89,7 @@ class SearchPage extends Component {
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {searchedBooks.map(book => (
+                        {this.state.searchedBooks.map(book => (
                             <Books
                                 key={book.id}
                                 book={book}

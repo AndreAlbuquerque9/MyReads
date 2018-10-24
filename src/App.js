@@ -7,8 +7,7 @@ import Shelf from "./Shelf";
 
 class BooksApp extends React.Component {
     state = {
-        books: [],
-        searchedBooks: []
+        books: []
     };
 
     componentDidMount() {
@@ -29,46 +28,22 @@ class BooksApp extends React.Component {
         });
     };
 
-    clearResults = () => {
-        this.setState({ searchedBooks: [] });
-    };
-
-    searchBook = query => {
-        BooksAPI.search(query).then(searchedBooks => {
-            if (searchedBooks.error === "empty query") {
-                this.clearResults();
-            } else {
-                searchedBooks = searchedBooks.map(book => {
-                    let bookInShelf = this.inShelf(book, this.state.books);
-
-                    if (bookInShelf === undefined) {
-                        book.shelf = "none";
-                        return book;
-                    } else {
-                        return bookInShelf;
-                    }
-                });
-
-                this.setState(() => ({
-                    searchedBooks
-                }));
-            }
-        });
-    };
-
-    inShelf = (book, shelf) => {
-        let inTheShelf;
-
-        shelf.forEach(bookToCheck => {
-            if (bookToCheck.id === book.id) {
-                inTheShelf = bookToCheck;
-            }
-        });
-
-        return inTheShelf;
-    };
-
     render() {
+        const shelfs = [
+            {
+                type: "currentlyReading",
+                name: "Currently Reading"
+            },
+            {
+                type: "wantToRead",
+                name: "Want To Read"
+            },
+            {
+                type: "read",
+                name: "Read"
+            }
+        ];
+
         return (
             <div className="app">
                 <Route
@@ -79,7 +54,18 @@ class BooksApp extends React.Component {
                             <div className="list-books-title">
                                 <h1>MyReads</h1>
                             </div>
-                            <Shelf
+
+                            {shelfs.map(shelf => (
+                                <Shelf
+                                    key={shelf.type}
+                                    books={this.state.books}
+                                    shelftype={shelf.type}
+                                    shelfName={shelf.name}
+                                    moveBook={this.moveBook}
+                                />
+                            ))}
+
+                            {/*<Shelf
                                 books={this.state.books}
                                 shelftype={"currentlyReading"}
                                 shelfName={"Currently Reading"}
@@ -98,20 +84,13 @@ class BooksApp extends React.Component {
                                 shelftype={"read"}
                                 shelfName={"Read"}
                                 moveBook={this.moveBook}
-                            />
+                            />*/}
                         </div>
                     )}
                 />
                 <Route
                     path="/search"
-                    render={() => (
-                        <SearchPage
-                            searchBook={this.searchBook}
-                            moveBook={this.moveBook}
-                            searchedBooks={this.state.searchedBooks}
-                            clearResults={this.clearResults}
-                        />
-                    )}
+                    render={() => <SearchPage moveBook={this.moveBook} />}
                 />
             </div>
         );

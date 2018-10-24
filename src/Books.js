@@ -11,10 +11,11 @@ class Books extends Component {
 
     handleSelection = event => {
         this.setState({ selectValue: event.target.value });
+        this.props.moveBook(this.props.book, event.target.value);
     };
 
     render() {
-        const { book, moveBook } = this.props;
+        const { book } = this.props;
         const bookThumnail = book.imageLinks
             ? book.imageLinks.thumbnail
             : "'https://via.placeholder.com/130x175'";
@@ -34,9 +35,6 @@ class Books extends Component {
                             <select
                                 value={this.state.selectValue}
                                 onChange={this.handleSelection}
-                                onClick={() => {
-                                    moveBook(book, this.state.selectValue);
-                                }}
                             >
                                 <option value="move" disabled>
                                     Move to...
