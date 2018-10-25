@@ -10,12 +10,9 @@ class BooksApp extends React.Component {
         books: []
     };
 
-    componentDidMount() {
-        BooksAPI.getAll().then(books => {
-            this.setState(() => ({
-                books
-            }));
-        });
+    async componentDidMount() {
+        const books = await BooksAPI.getAll();
+        this.setState({ books });
     }
 
     moveBook = (book, shelf) => {
@@ -64,27 +61,6 @@ class BooksApp extends React.Component {
                                     moveBook={this.moveBook}
                                 />
                             ))}
-
-                            {/*<Shelf
-                                books={this.state.books}
-                                shelftype={"currentlyReading"}
-                                shelfName={"Currently Reading"}
-                                moveBook={this.moveBook}
-                            />
-
-                            <Shelf
-                                books={this.state.books}
-                                shelftype={"wantToRead"}
-                                shelfName={"Want To Read"}
-                                moveBook={this.moveBook}
-                            />
-
-                            <Shelf
-                                books={this.state.books}
-                                shelftype={"read"}
-                                shelfName={"Read"}
-                                moveBook={this.moveBook}
-                            />*/}
                         </div>
                     )}
                 />
