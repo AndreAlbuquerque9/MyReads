@@ -16,9 +16,9 @@ class SearchPage extends Component {
         }));
 
         if (query !== "") {
-            this.props.searchBook(this.state.query);
+            this.searchBook(this.state.query);
         } else {
-            this.props.clearResults();
+            this.clearResults();
         }
     };
 
@@ -28,7 +28,7 @@ class SearchPage extends Component {
                 this.clearResults();
             } else {
                 searchedBooks = searchedBooks.map(book => {
-                    let bookInShelf = this.inShelf(book, this.state.books);
+                    let bookInShelf = this.inShelf(book, this.props.books);
 
                     if (bookInShelf === undefined) {
                         book.shelf = "none";
