@@ -6,7 +6,7 @@ This project was forked from [udacity/reactnd-project-myreads-starter](https://g
 
 ## Installation
 
-* clone the repository with `git clone https://github.com/AndreAlbuquerque9/MyReads`
+* clone the repository with `git clone https://github.com/AndreAlbuquerque9/MyReads.git`
 * install all project dependencies with `npm install`
 * start the development server with `npm start`
 
